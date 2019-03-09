@@ -1,0 +1,56 @@
+const d3 = require('d3');
+
+const svg = d3.select('body').append('svg')
+  .attr('width', 900).attr('height', 600)
+   .append('g').attr('transform', 'translate(50,50)');
+
+const data = [
+  { "child": "Play_Team", "parent": "" },
+  { "child": "ALin", "parent": "Play_Team" },
+  { "child": "Alex", "parent": "Play_Team" },
+  { "child": "Nina", "parent": "Play_Team" },
+  { "child": "Nina2", "parent": "Nina" },
+  { "child": "Nina3", "parent": "Nina" },
+  { "child": "Nina4", "parent": "Nina" },
+  { "child": "ALin 2", "parent": "ALin" },
+  { "child": "ALin 3", "parent": "ALin" },
+  { "child": "ALin 4", "parent": "ALin" },
+];
+
+const dataStructure = d3.stratify()
+  .id(function (d) { return d.child; })
+  .parentId(function (d) { return d.parent; })(data);
+
+const treeStructure = d3.tree().size([650, 300]);
+const information = treeStructure(dataStructure);
+// console.log(information.descendants());
+
+const connections = svg.append('g').selectAll('path')
+  .data(information.links());
+
+connections.enter().append('path')
+  .attr('d', function (d) {
+    return 'M' + d.source.x + ',' + d.source.y + 'v 50 H' +
+      d.target.x + ' V' + d.target.y;
+  });
+
+// return "M" + d.source.y + " " + d.source.x +
+//   "L" + (d.source.y + lineOffsetWidth) + " " + d.source.x +
+//   " L" + (d.source.y + lineOffsetWidth) + " " + d.target.x + " L" +
+//   d.target.y + " " + d.target.x;
+
+
+const rectangles = svg.append('g').selectAll('rect')
+  .data(information.descendants());
+
+rectangles.enter().append('rect')
+  .attr('x', function (d) { return d.x - 40; })
+  .attr('y', function (d) { return d.y - 20; });
+
+const names = svg.append('g').selectAll('text')
+  .data(information.descendants());
+
+names.enter().append('text')
+  .text(function (d) { return d.data.child; })
+  .attr('x', function (d) { return d.x })
+  .attr('y', function (d) { return d.y })

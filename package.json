@@ -5,14 +5,19 @@
   "main": "src/index.js",
   "dependencies": {
     "d3": "^5.9.1",
-    "faker": "^4.1.0"
+    "d3-dag": "^0.2.3",
+    "faker": "^4.1.0",
+    "svg": "^0.1.0"
   },
   "devDependencies": {
     "browser-sync": "^2.26.3",
     "budo": "^11.6.1"
   },
   "scripts": {
-    "start": "budo demo.js:dist/bundle.js --dir ./src --live --open",
+    "dag": "budo src/dag.js:dist/bundle.js --dir ./src --live --open",
+    "dag2": "budo src/dag2.js:dist/bundle.js --dir ./src --live --open",
+    "force": "budo src/force.js:dist/bundle.js --dir ./src --live --open",
+    "tree": "budo demo.js:dist/bundle.js --dir ./src --live --open",
     "release": "rm -rf package-lock.json && npm version minor && npm publish",
     "patch": "rm -rf package-lock.json && npm version patch && npm publish"
   },

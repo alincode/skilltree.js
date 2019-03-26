@@ -1,5 +1,13 @@
 # skilltree.js
 
+### Add TODO
+
+[ ] icon image node & if icon empty use default
+[ ] click event open window
+[ ] hover event show title
+[ ] workshop json load data
+[ ] workshop have different url
+
 ![](assets/demo.gif)
 
 ### run demo

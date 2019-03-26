@@ -1,5 +1,5 @@
 const faker = require('faker')
-const app = require('./src')
+const app = require('./src/tree')
 
 const data = [
   {

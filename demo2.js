@@ -1,37 +1,6 @@
-# skilltree.js
+const faker = require('faker')
+const start = require('./src/dag')
 
-### feature
-
-[x] icon image node & if icon empty use default
-[x] click event open window
-[x] workshop json load data
-[x] workshop have different url
-[x] hover event show title
-
-![](assets/demo.gif)
-
-### run demo
-
-```
-npm install
-npm start
-```
-
-### customized css
-
-* you can add some css to make your own style.
-
-### standard data structure
-
-* `parentIds`
-  * if it is a root node, should don't have `parentIds` property.
-  * `parentIds` is a array.
-* `title` will show in the tooltip.
-
-### javascript example
-
-```js
-const app = require('skilltree.js')
 const dag_data = [
   {
     id: '0',
@@ -104,8 +73,6 @@ const dag_data = [
 ]
 
 start(dag_data)
-// start(dag_data, 3)
-```
 
-## License
-MIT © [alincode](https://github.com/alincode/solcjs-lightweight)
+// const id = '3'
+// start(dag_data, id)

@@ -1,4 +1,5 @@
-var faker = require('faker')
+const faker = require('faker')
+const _ = require('lodash')
 
 const width = 400
 const height = 400
@@ -24,91 +25,32 @@ function getSources() {
 const sources = getSources()
 const source = 'Grafo'
 
-async function getDag() {
+async function getFilterData(dag_data, id) {
+  let subs = _.filter(dag_data, o => _.includes(o.parentIds, id)).map(o => o.id)
+
+  let datas = _.filter(dag_data, function(o) {
+    return (
+      id === o.id ||
+      _.includes(o.parentIds, id) ||
+      _.intersection(subs, o.parentIds).length > 0
+    )
+  })
+
+  datas = _.map(datas, function(o) {
+    if (o.id === id) return _.pick(o, ['id', 'title', 'url', 'icon'])
+    return o
+  })
+  return datas
+}
+
+async function getDag(dag_data, id) {
   const [key, reader] = sources[source]
   // const dag_data = await d3.json(
   // `https://raw.githubusercontent.com/erikbrinkman/d3-dag/master/examples/${key}.json`
   // )
+  let datas = id ? getFilterData(dag_data, id) : dag_data
 
-  const dag_data = [
-    {
-      id: '0',
-      title: 'Solidity',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '1',
-      parentIds: ['0'],
-      title: 'Variables',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '2',
-      parentIds: ['0'],
-      title: 'Events',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '3',
-      parentIds: ['2'],
-      title: 'Mappings',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '4',
-      parentIds: ['2'],
-      title: 'Types',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '5',
-      parentIds: ['2'],
-      title: 'Modifiers',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '6',
-      parentIds: ['9'],
-      title: 'Imports',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '7',
-      parentIds: ['3'],
-      title: 'Source File',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '8',
-      parentIds: ['3'],
-      title: 'Remix',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '9',
-      parentIds: ['4'],
-      title: 'Deploying',
-      url: 'https://play.ethereum.org/play-workshop/',
-      icon: faker.image.imageUrl(32, 32),
-    },
-    {
-      id: '10',
-      parentIds: ['9'],
-      title: 'Networks',
-      url: 'https://play.ethereum.org/play-workshop/',
-    },
-  ]
-
-  return reader(dag_data)
+  return reader(datas)
 }
 
 function getLayerings() {
@@ -152,8 +94,8 @@ const layout = d3
   .decross(decrossings[decross])
   .coord(coords[coord])
 
-async function start() {
-  const dag = await getDag()
+async function start(dag_data, id) {
+  const dag = await getDag(dag_data, id)
 
   function getTime() {
     const start = Date.now()
@@ -176,6 +118,23 @@ async function start() {
       `${-nodeRadius} ${-nodeRadius} ${width + 2 * nodeRadius} ${height +
         2 * nodeRadius}`
     )
+
+  const tooltip = d3
+    .select('body')
+    .append('div')
+    .attr('class', 'tooltip')
+    .style('opacity', 0)
+    .style('position', 'absolute')
+    .style('text-align', 'left')
+    .style('width', '160px')
+    .style('height', '80px')
+    .style('padding', '2px')
+    .style('padding', '2px')
+    .style('font', '12px sans-serif')
+    .style('background', 'lightsteelblue')
+    .style('border', '0px')
+    .style('order-radius', '8px')
+    .style('pointer-events', 'none')
 
   const defs = svg.append('defs') // For gradients
 
@@ -236,9 +195,6 @@ async function start() {
     .append('g')
     .attr('title', n => n.id)
     .attr('transform', ({ x, y }) => `translate(${x + offset}, ${y + offset})`)
-    .on('hover', function(event) {
-      console.log('hover')
-    })
 
   // Plot node circles
   nodes
@@ -257,15 +213,31 @@ async function start() {
   // .attr('r', nodeRadius)
   // .attr('fill', n => colorMap[n.id])
 
-  // TODO: title replace by tooltip
   nodes
     .append('circle')
     .attr('r', nodeRadius)
     .attr('fill', n => `url(#img${n.id})`)
     .on('click', n => window.open(n.data.url))
-    .append('title')
-    .text(n => n.data.title)
+    .on('mousemove', function(d) {
+      tooltip
+        .transition()
+        .duration(200)
+        .style('opacity', 0.9)
 
+      tooltip
+        .html(`${d.data.title}`)
+        .style('left', d.x + 60 + 'px')
+        .style('top', d.y + 15 + 'px')
+        .style('z-index', 99)
+    })
+    .on('mouseout', function(d) {
+      tooltip
+        .transition()
+        .duration(5000)
+        .style('opacity', 0)
+    })
+  // .append('title')
+  // .text(n => `title:  \n ${n.data.title}`)
   // .attr('fill', n => colorMap[n.id])
 
   const arrow = d3
@@ -282,13 +254,10 @@ async function start() {
     .attr('d', arrow)
     .attr('transform', ({ source, target, data }) => {
       const [end, start] = data.points.reverse()
-      // This sets the arrows the node radius (20) + a little bit (3) away from the node center, on the last line segment of the edge. This means that edges that only span ine level will work perfectly, but if the edge bends, this will be a little off.
       const dx = start.x - end.x
       const dy = start.y - end.y
       const scale = (nodeRadius * 1.15) / Math.sqrt(dx * dx + dy * dy)
-      // This is the angle of the last line segment
       const angle = (Math.atan2(-dy, -dx) * 180) / Math.PI + 90
-      // console.log(angle, dx, dy)
       return `translate(${end.x + offset + dx * scale}, ${end.y +
         offset +
         dy * scale}) rotate(${angle})`
@@ -308,4 +277,4 @@ async function start() {
   //   .attr('fill', 'white')
 }
 
-start()
+module.exports = start

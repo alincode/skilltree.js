@@ -7,14 +7,17 @@
     "d3": "^5.9.1",
     "d3-dag": "^0.2.3",
     "faker": "^4.1.0",
+    "lodash": "^4.17.11",
     "svg": "^0.1.0"
   },
   "devDependencies": {
     "browser-sync": "^2.26.3",
+    "browserify": "^16.2.3",
     "budo": "^11.6.1"
   },
   "scripts": {
-    "dag": "budo src/dag.js:dist/bundle.js --dir ./src --live --open",
+    "start": "budo demo2.js:dist/bundle.js --dir ./src --live --open",
+    "build": "browserify --full-paths demo2.js > bundle.js",
     "dag2": "budo src/dag2.js:dist/bundle.js --dir ./src --live --open",
     "force": "budo src/force.js:dist/bundle.js --dir ./src --live --open",
     "tree": "budo demo.js:dist/bundle.js --dir ./src --live --open",

@@ -1,12 +1,14 @@
 # skilltree.js
 
+[Demo](https://alincode.github.io/skilltree.js/)
+
 ### feature
 
-[x] icon image node & if icon empty use default
-[x] click event open window
-[x] workshop json load data
-[x] workshop have different url
-[x] hover event show title
+* [x] icon image node & if icon empty use default
+* [x] click event open window
+* [x] workshop json load data
+* [x] workshop have different url
+* [x] hover event show title
 
 ![](assets/demo.gif)
 

@@ -40,6 +40,7 @@ async function getFilterData(dag_data, id) {
     if (o.id === id) return _.pick(o, ['id', 'title', 'url', 'icon'])
     return o
   })
+  console.log(datas)
   return datas
 }
 
@@ -48,7 +49,7 @@ async function getDag(dag_data, id) {
   // const dag_data = await d3.json(
   // `https://raw.githubusercontent.com/erikbrinkman/d3-dag/master/examples/${key}.json`
   // )
-  let datas = id ? getFilterData(dag_data, id) : dag_data
+  let datas = id ? await getFilterData(dag_data, id) : dag_data
 
   return reader(datas)
 }

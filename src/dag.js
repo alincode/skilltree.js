@@ -25,22 +25,22 @@ function getSources() {
 const sources = getSources()
 const source = 'Grafo'
 
+async function getChildNodes(dag_data, parentNode) {
+  const mySubs = _.filter(dag_data, o => _.includes(o.parentIds, parentNode.id))
+  const allSubs =
+    mySubs.length > 0
+      ? await Promise.all(mySubs.map(sub => getChildNodes(dag_data, sub)))
+      : []
+  return _.flattenDeep(_.concat([parentNode], allSubs))
+}
+
 async function getFilterData(dag_data, id) {
-  let subs = _.filter(dag_data, o => _.includes(o.parentIds, id)).map(o => o.id)
-
-  let datas = _.filter(dag_data, function(o) {
-    return (
-      id === o.id ||
-      _.includes(o.parentIds, id) ||
-      _.intersection(subs, o.parentIds).length > 0
-    )
-  })
-
+  const rootNode = _.find(dag_data, ['id', id])
+  let datas = await getChildNodes(dag_data, rootNode)
   datas = _.map(datas, function(o) {
     if (o.id === id) return _.pick(o, ['id', 'title', 'url', 'icon'])
     return o
   })
-  console.log(datas)
   return datas
 }
 

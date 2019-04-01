@@ -1,6 +1,6 @@
 {
   "name": "skilltree.js",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "skill tree d3.js module",
   "main": "src/index.js",
   "dependencies": {

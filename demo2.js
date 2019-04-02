@@ -1,5 +1,5 @@
 const faker = require('faker')
-const start = require('./src/dag')
+const start = require('./src')
 
 const dag_data = [
   {

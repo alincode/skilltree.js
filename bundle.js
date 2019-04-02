@@ -1,6 +1,6 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"/Users/alincode/code/skilltree.js/demo2.js":[function(require,module,exports){
 const faker = require('faker')
-const start = require('./src/dag')
+const start = require('./src')
 
 const dag_data = [
   {
@@ -78,7 +78,7 @@ start(dag_data)
 // const id = '3'
 // start(dag_data, id)
 
-},{"./src/dag":"/Users/alincode/code/skilltree.js/src/dag.js","faker":"/Users/alincode/code/skilltree.js/node_modules/faker/index.js"}],"/Users/alincode/code/skilltree.js/node_modules/d3-array/dist/d3-array.js":[function(require,module,exports){
+},{"./src":"/Users/alincode/code/skilltree.js/src/index.js","faker":"/Users/alincode/code/skilltree.js/node_modules/faker/index.js"}],"/Users/alincode/code/skilltree.js/node_modules/d3-array/dist/d3-array.js":[function(require,module,exports){
 // https://d3js.org/d3-array/ v1.2.4 Copyright 2018 Mike Bostock
 (function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
@@ -112395,7 +112395,7 @@ exports.generate = function generate() {
 }.call(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],"/Users/alincode/code/skilltree.js/src/dag.js":[function(require,module,exports){
+},{}],"/Users/alincode/code/skilltree.js/src/index.js":[function(require,module,exports){
 const faker = require('faker')
 const _ = require('lodash')
 

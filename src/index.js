@@ -95,7 +95,7 @@ const layout = d3
   .decross(decrossings[decross])
   .coord(coords[coord])
 
-async function start(dag_data, id) {
+async function start(rootElemntName, dag_data, id) {
   const dag = await getDag(dag_data, id)
 
   function getTime() {
@@ -110,7 +110,7 @@ async function start(dag_data, id) {
   const nodeRadius = 25
 
   const svg = d3
-    .select('body')
+    .select(rootElemntName)
     .append('svg')
     .attr('width', width * 1.2)
     .attr('height', height * 1.2)
@@ -121,7 +121,7 @@ async function start(dag_data, id) {
     )
 
   const tooltip = d3
-    .select('body')
+    .select(rootElemntName)
     .append('div')
     .attr('class', 'tooltip')
     .style('opacity', 0)

@@ -5,78 +5,54 @@ const start = require('./src')
 const dag_data = [
   {
     id: '0',
-    title: 'Solidity',
+    parentIds: [],
+    title: 'Chrome Browser',
     url: 'https://play.ethereum.org/play-workshop/',
   },
   {
     id: '1',
     parentIds: ['0'],
-    title: 'Variables',
+    title: 'Github',
     url: 'https://play.ethereum.org/play-workshop/',
   },
   {
     id: '2',
     parentIds: ['0'],
-    title: 'Events',
+    title: 'Metamask',
     url: 'https://play.ethereum.org/play-workshop/',
   },
   {
     id: '3',
-    parentIds: ['2'],
-    title: 'Mappings',
+    parentIds: [],
+    title: 'Solidity',
     url: 'https://play.ethereum.org/play-workshop/',
   },
   {
     id: '4',
-    parentIds: ['2'],
-    title: 'Types',
-    url: 'https://play.ethereum.org/play-workshop/',
-  },
-  {
-    id: '5',
-    parentIds: ['2'],
-    title: 'Modifiers',
-    url: 'https://play.ethereum.org/play-workshop/',
-    icon: faker.image.imageUrl(32, 32),
-  },
-  {
-    id: '6',
-    parentIds: ['9'],
-    title: 'Imports',
-    url: 'https://play.ethereum.org/play-workshop/',
-    icon: faker.image.imageUrl(32, 32),
-  },
-  {
-    id: '7',
-    parentIds: ['3'],
-    title: 'Source File',
-    url: 'https://play.ethereum.org/play-workshop/',
-  },
-  {
-    id: '8',
-    parentIds: ['3'],
+    parentIds: ['2', '3'],
     title: 'Remix',
     url: 'https://play.ethereum.org/play-workshop/',
   },
   {
-    id: '9',
-    parentIds: ['8'],
-    title: 'Deploying',
+    id: '5',
+    parentIds: ['1'],
+    title: 'Github Pages',
     url: 'https://play.ethereum.org/play-workshop/',
-    // icon: faker.image.imageUrl(32, 32),
+    // icon: 'faker.image.imageUrl(32, 32)',
   },
   {
-    id: '10',
-    parentIds: ['9'],
-    title: 'Networks',
+    id: '6',
+    parentIds: ['4', '5'],
+    title: 'DAPPs',
     url: 'https://play.ethereum.org/play-workshop/',
+    // icon: 'faker.image.imageUrl(32, 32)',
   },
 ]
 
 start('body', dag_data)
 
-// const id = '3'
-// start(dag_data, id)
+// const id = '2'
+// start('body', dag_data, id)
 
 },{"./src":"/Users/alincode/code/skilltree.js/src/index.js","faker":"/Users/alincode/code/skilltree.js/node_modules/faker/index.js"}],"/Users/alincode/code/skilltree.js/node_modules/d3-array/dist/d3-array.js":[function(require,module,exports){
 // https://d3js.org/d3-array/ v1.2.4 Copyright 2018 Mike Bostock
@@ -112423,22 +112399,19 @@ function getSources() {
 const sources = getSources()
 const source = 'Grafo'
 
-async function getChildNodes(dag_data, parentNode) {
-  const mySubs = _.filter(dag_data, o => _.includes(o.parentIds, parentNode.id))
+async function getParentNodes(dag_data, childNode) {
+  const mySubs = _.filter(dag_data, o => _.includes(childNode.parentIds, o.id))
   const allSubs =
     mySubs.length > 0
-      ? await Promise.all(mySubs.map(sub => getChildNodes(dag_data, sub)))
+      ? await Promise.all(mySubs.map(sub => getParentNodes(dag_data, sub)))
       : []
-  return _.flattenDeep(_.concat([parentNode], allSubs))
+  return _.flattenDeep(_.concat([childNode], allSubs))
 }
 
 async function getFilterData(dag_data, id) {
-  const rootNode = _.find(dag_data, ['id', id])
-  let datas = await getChildNodes(dag_data, rootNode)
-  datas = _.map(datas, function(o) {
-    if (o.id === id) return _.pick(o, ['id', 'title', 'url', 'icon'])
-    return o
-  })
+  const selectedNode = _.find(dag_data, ['id', id])
+  let datas = await getParentNodes(dag_data, selectedNode)
+  datas = _.union(datas)
   return datas
 }
 

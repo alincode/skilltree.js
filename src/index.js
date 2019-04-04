@@ -25,22 +25,19 @@ function getSources() {
 const sources = getSources()
 const source = 'Grafo'
 
-async function getChildNodes(dag_data, parentNode) {
-  const mySubs = _.filter(dag_data, o => _.includes(o.parentIds, parentNode.id))
+async function getParentNodes(dag_data, childNode) {
+  const mySubs = _.filter(dag_data, o => _.includes(childNode.parentIds, o.id))
   const allSubs =
     mySubs.length > 0
-      ? await Promise.all(mySubs.map(sub => getChildNodes(dag_data, sub)))
+      ? await Promise.all(mySubs.map(sub => getParentNodes(dag_data, sub)))
       : []
-  return _.flattenDeep(_.concat([parentNode], allSubs))
+  return _.flattenDeep(_.concat([childNode], allSubs))
 }
 
 async function getFilterData(dag_data, id) {
-  const rootNode = _.find(dag_data, ['id', id])
-  let datas = await getChildNodes(dag_data, rootNode)
-  datas = _.map(datas, function(o) {
-    if (o.id === id) return _.pick(o, ['id', 'title', 'url', 'icon'])
-    return o
-  })
+  const selectedNode = _.find(dag_data, ['id', id])
+  let datas = await getParentNodes(dag_data, selectedNode)
+  datas = _.union(datas)
   return datas
 }
 

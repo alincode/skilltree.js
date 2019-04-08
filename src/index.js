@@ -1,5 +1,7 @@
 const faker = require('faker')
 const _ = require('lodash')
+const html = require('nanohtml')
+const csjs = require('csjs')
 
 const width = 400
 const height = 400
@@ -275,4 +277,18 @@ async function start(rootElemntName, dag_data, id) {
   //   .attr('fill', 'white')
 }
 
-module.exports = start
+const css = csjs`
+  .skilltree {
+    height: 100%;
+    width: 100%;
+  }`
+
+function index(data, id) {
+  const element = html`
+    <div class=${css.skilltree}></div>
+  `
+  start(element, data, id)
+  return element
+}
+
+module.exports = index

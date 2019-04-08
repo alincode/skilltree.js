@@ -33,7 +33,9 @@ npm start
 ### javascript example
 
 ```js
-const app = require('skilltree.js')
+const skilltree = require('skilltree.js')
+const html = require('nanohtml')
+
 const dag_data = [
   {
     id: '0',
@@ -105,8 +107,19 @@ const dag_data = [
   },
 ]
 
-start(dag_data)
-// start(dag_data, 3)
+const element = html`
+  <div class="app">
+    ${skilltree(dag_data)}
+  </div>
+`
+
+// const element = html`
+//   <div class="app">
+//     ${skilltree(dag_data, '4')}
+//   </div>
+// `
+
+document.body.appendChild(element)
 ```
 
 ## License

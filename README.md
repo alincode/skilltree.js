@@ -34,6 +34,7 @@ npm start
 
 ```js
 const skilltree = require('skilltree.js')
+const faker = require('faker')
 const html = require('nanohtml')
 
 const dag_data = [
